@@ -1,77 +1,86 @@
-// src/App.jsx
-import { useState } from 'react';
-import './App.css';
-
-// const App = () => {
- 
-
-
-// const [isDarkMode, setIsDarkMode] = useState(true)
-
-// console.log("Our IsDarkMode state value is:", isDarkMode);
-// return (
-
-//   <div className= { isDarkMode ===true ? "dark" : "Light"}>
-
-//     {/*           */}
-
-//     <h1> Hello World!</h1>
-
-//   </div>
-// );
-// };
-
-// const [employee, setemployee] = useState({
-//   firstName: 'keshaun',
-//   lastName: 'jones',
-//   age: 26,
-//   hasPets: true,
-//   console.log("The employee state value is",employee)
-//   return (
-//     <div className={isDarkMode === true ? "dark" : "light"}>
-//   <h1> Hello Moto!</h1>  
-//   <p>{renderedMessage}</p>
-//   </div>
-//   )
-// });
-
- 
-// src/App.jsx
-
+import React, { useState } from 'react';
 
 const App = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-const [counter,setCounter] = useState("Light")
+  const [team, setTeam] = useState([]);
+  const [money, setMoney] = useState(100);
+  const [totalStrength, setTotalStrength] = useState(725);
+  const [totalAgility, setTotalAgility] = useState(8900);
 
-  // placeholder function for handling mode changes
-  // we'll implement the functionality in the next step
-  const handleDarkMode = () => {
-    // TODO: implement the logic to handle a user clicking the dark mode button
-    console.log('Dark Mode!');
+  const zombieFighters = [
+    { name: 'Survivor', price: 12, strength: 6, agility: 4, img: 'https://via.placeholder.com/150/92c952' },
+    { name: 'Scavenger', price: 10, strength: 5, agility: 5, img: 'https://via.placeholder.com/150/771796' },
+    { name: 'Shadow', price: 18, strength: 7, agility: 8, img: 'https://via.placeholder.com/150/24f355' },
+    { name: 'Tracker', price: 14, strength: 7, agility: 6, img: 'https://via.placeholder.com/150/d32776' },
+    { name: 'Sharpshooter', price: 20, strength: 6, agility: 8, img: 'https://via.placeholder.com/150/1ee8a4' },
+    { name: 'Medic', price: 15, strength: 5, agility: 7, img: 'https://via.placeholder.com/150/66b7d2' },
+    { name: 'Engineer', price: 16, strength: 6, agility: 5, img: 'https://via.placeholder.com/150/56acb2' },
+    { name: 'Brawler', price: 11, strength: 8, agility: 3, img: 'https://via.placeholder.com/150/8985dc' },
+    { name: 'Infiltrator', price: 17, strength: 5, agility: 9, img: 'https://via.placeholder.com/150/392537' },
+    { name: 'Leader', price: 22, strength: 7, agility: 6, img: 'https://via.placeholder.com/150/602b9e' },
+  ];
+
+  const calculateTotalStrength = (team) => team.reduce((total, fighter) => total + fighter.strength, 0);
+  const calculateTotalAgility = (team) => team.reduce((total, fighter) => total + fighter.agility, 0);
+
+  const handleAddFighter = (fighter) => {
+    if (money < fighter.price) {
+      console.log('Not enough money');
+      return;
+    }
+    setTeam([...team, fighter]);
+    setMoney(money - fighter.price);
+    setTotalStrength(calculateTotalStrength([...team, fighter]));
+    setTotalAgility(calculateTotalAgility([...team, fighter]));
   };
 
-  const handleLightMode = () => {
-    // TODO: implement the logic to handle a user clicking the light mode button
-    console.log('Light Mode!');
+  const handleRemoveFighter = (fighter) => {
+    const updatedTeam = team.filter((member) => member !== fighter);
+    setTeam(updatedTeam);
+    setMoney(money + fighter.price);
+    setTotalStrength(calculateTotalStrength(updatedTeam));
+    setTotalAgility(calculateTotalAgility(updatedTeam));
   };
 
-  // add a new div with buttons inside
-  // wrap both divs in a fragment
   return (
-    <>
-      <div className={isDarkMode ? 'dark' : 'light'}>
-        <h1>Hello world!</h1>
-      </div>
-      <div>
-        <button onClick{()=> setCounter(counter +1)}>count</button>
-        <button onClick={handleDarkMode}>Dark Mode</button>
-        <button onClick={handleLightMode}>Light Mode</button>
-      </div>
-    </>
+    <div>
+      <h1>Zombie Apocalypse Team</h1>
+      <p>Money: ${money}</p>
+      <p>Total Team Strength: {totalStrength}</p>
+      <p>Total Team Agility: {totalAgility}</p>
+
+      <h2>Available Fighters</h2>
+      <ul>
+        {zombieFighters.map((fighter, index) => (
+          <li key={index}>
+            <img src={fighter.img} alt={fighter.name} />
+            <h3>{fighter.name}</h3>
+            <p>Price: ${fighter.price}</p>
+            <p>Strength: {fighter.strength}</p>
+            <p>Agility: {fighter.agility}</p>
+            <button onClick={() => handleAddFighter(fighter)}>Add</button>
+          </li>
+        ))}
+      </ul>
+
+      <h2>Your Team</h2>
+      {team.length === 0 ? (
+        <p>Pick some team members!</p>
+      ) : (
+        <ul>
+          {team.map((fighter, index) => (
+            <li key={index}>
+              <img src={fighter.img} alt={fighter.name} />
+              <h3>{fighter.name}</h3>
+              <p>Price: ${fighter.price}</p>
+              <p>Strength: {fighter.strength}</p>
+              <p>Agility: {fighter.agility}</p>
+              <button onClick={() => handleRemoveFighter(fighter)}>Remove</button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 
 export default App;
-
-
-
